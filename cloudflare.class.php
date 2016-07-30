@@ -149,9 +149,6 @@ class CloudFlare
       {
         throw new \Exception("This website is not protected by CloudFlare or the UAM is not enabled", 1);
       }
-    }
-    if(!$this->cookieExists)
-    {
       sleep(8);
       $this->getCookie();
     }
