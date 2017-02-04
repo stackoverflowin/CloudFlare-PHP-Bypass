@@ -118,16 +118,13 @@ class CloudFlare
   {
     $refreshHeader = $this->request->getHeader("Refresh")[0];
     $followLocation = $this->target.$this->parseRefresh($refreshHeader);
+    $data = $this->getHeaderData();
+    $data['Referer'] = $this->target;
+
     $this->request = $this->client->request(
       "GET",
       $followLocation,
-      [
-        "User-Agent" => self::USER_AGENT,
-        "Accept" => "*/*",
-        "Accept-Encoding" => "gzip, deflate, sdch",
-        "Accept-Language" => "en-GB,en-US;q=0.8,en;q=0.6",
-        "Referer" => $this->target
-      ]
+      $data
     );
   }
 
@@ -139,12 +136,7 @@ class CloudFlare
     $this->request = $this->client->request(
       "GET",
       $this->target,
-      [
-        "User-Agent" => self::USER_AGENT,
-        "Accept" => "*/*",
-        "Accept-Encoding" => "gzip, deflate, sdch",
-        "Accept-Language" => "en-GB,en-US;q=0.8,en;q=0.6"
-      ]
+      $this->getHeaderData()
     );
     if(!$this->cookieExists)
     {
@@ -182,16 +174,25 @@ class CloudFlare
     $this->request = $this->client->request(
       "GET",
       $this->target,
-      [
-        "User-Agent" => self::USER_AGENT,
-        "Accept" => "*/*",
-        "Accept-Encoding" => "gzip, deflate, sdch",
-        "Accept-Language" => "en-GB,en-US;q=0.8,en;q=0.6"
-      ],
+      $this->getHeaderData(),
       [
         'allow_redirects' => true
       ]
     );
     return $this->request->getBody();
   }
+
+  /*
+   * getHeaderData returns the header data for the requests
+   */
+  private function getHeaderData()
+  {
+    return [
+        "User-Agent" => self::USER_AGENT,
+        "Accept" => "*/*",
+        "Accept-Encoding" => "gzip, deflate, sdch",
+        "Accept-Language" => "en-GB,en-US;q=0.8,en;q=0.6"
+      ];
+  }
+
 }
