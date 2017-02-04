@@ -80,8 +80,11 @@ class CloudFlare
       "http_errors" => false
     ];
 
-    if($cookies[0])
+    if(isset($cookies[0]) && $cookies[0])
     {
+      if(empty($cookies[1]))
+      	return;
+      
       $file = $cookies[1];
       $this->cookieJar = new \GuzzleHttp\Cookie\FileCookieJar($file);
       $config = [
